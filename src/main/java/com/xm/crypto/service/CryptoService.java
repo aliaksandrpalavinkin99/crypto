@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface CryptoService {
 
-    //make private method into impl
-    List<CryptoPrice> saveDataToDbFromCSV();
+    List<CryptoPrice> getCryptoPricesSortedDesc();
 }

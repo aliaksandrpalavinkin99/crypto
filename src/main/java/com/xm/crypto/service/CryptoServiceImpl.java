@@ -15,11 +15,16 @@ public class CryptoServiceImpl implements CryptoService {
     private CryptoPriceLoader cryptoPriceLoader;
     @Autowired
     private CryptoRepository cryptoRepository;
+
     @Override
-    public List<CryptoPrice> saveDataToDbFromCSV() {
+    public List<CryptoPrice> getCryptoPricesSortedDesc() {
+        saveDataToDbFromCSV();
+
+        return cryptoRepository.findAllByOrderByPriceDesc();
+    }
+
+    private void saveDataToDbFromCSV() {
         List<CryptoPrice> prices = cryptoPriceLoader.parsePrices();
         cryptoRepository.saveAll(prices);
-
-        return prices;
     }
 }
