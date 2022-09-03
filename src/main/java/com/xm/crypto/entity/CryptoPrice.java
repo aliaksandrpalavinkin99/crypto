@@ -5,15 +5,21 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
 @jakarta.persistence.Entity
 @Table(name = "prices")
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class CryptoPrice extends Entity {
 
     @CsvBindByName(column = "timestamp")

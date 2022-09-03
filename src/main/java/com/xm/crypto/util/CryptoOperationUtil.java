@@ -7,6 +7,7 @@ import com.xm.crypto.repository.CryptoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class CryptoOperationUtil {
@@ -27,6 +28,23 @@ public class CryptoOperationUtil {
             }
             default -> {
                 return cr -> repository.findTop1ByCryptoOrderByPriceAsc(cr);
+            }
+        }
+    }
+
+    public BiFunction<Long, Long, List<CryptoPrice>> getOperationMethodForMonth(OperationType operationType) {
+        switch (operationType) {
+            case MAX -> {
+                return (start, end) -> repository.findMaxPricesForEachCrypto(start, end);
+            }
+            case LATEST -> {
+                return (start, end) -> repository.findLatestPricesForEachCrypto(start, end);
+            }
+            case NEWEST -> {
+                return (start, end) -> repository.findNewestPricesForEachCrypto(start, end);
+            }
+            default -> {
+                return (start, end) -> repository.findMinPricesForEachCrypto(start, end);
             }
         }
     }
