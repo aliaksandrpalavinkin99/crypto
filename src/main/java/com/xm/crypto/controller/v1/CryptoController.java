@@ -5,6 +5,7 @@ import com.xm.crypto.dto.ComparedResultDTO;
 import com.xm.crypto.dto.CryptoPriceDTO;
 import com.xm.crypto.dto.CryptoPricesDTO;
 import com.xm.crypto.dto.NormalizedRangeDTO;
+import com.xm.crypto.entity.ComparedResult;
 import com.xm.crypto.entity.Crypto;
 import com.xm.crypto.entity.CryptoPrice;
 import com.xm.crypto.entity.OperationType;
@@ -67,9 +68,15 @@ public class CryptoController {
     @ApiOperation(value = "Calculate and compare normalized range for all cryptos, return the least and greatest ranges")
     @GetMapping(value = "/comparing")
     public ComparedResultDTO compareNormalizedRange () {
-        ModelMapper modelMapper = new ModelMapper();
+        ComparedResult comparedResult = cryptoService.compareNormalizedRange();
 
-        return modelMapper.map(cryptoService.compareNormalizedRange(), ComparedResultDTO.class);
+        ModelMapper modelMapper = new ModelMapper();
+        NormalizedRangeDTO leastRange =
+                modelMapper.map(comparedResult.getLeastNormalizedRange(), NormalizedRangeDTO.class);
+        NormalizedRangeDTO greatestRange =
+                modelMapper.map(comparedResult.getGreatestNormalizedRange(), NormalizedRangeDTO.class);
+
+        return new ComparedResultDTO(leastRange, greatestRange);
     }
 
     @ApiOperation(value = "Calculate and compare normalized range for all cryptos for a specific fate, " +
