@@ -7,6 +7,7 @@ import com.xm.crypto.util.CryptoOperationUtil;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -50,9 +51,15 @@ public class CryptoServiceImpl implements CryptoService {
 
     @Override
     public ComparedResult compareNormalizedRange() {
+        saveDataToDbFromCSV();
+
         List<CryptoPrice> prices = IterableUtils.toList(cryptoRepository.findAll());
 
         List<NormalizedRange> ranges = findNormalizedRanges(prices);
+
+        if (CollectionUtils.isEmpty(ranges)) {
+            return new ComparedResult();
+        }
 
         NormalizedRange min = Collections.min(ranges, Comparator.comparing(NormalizedRange::getPrice));
         NormalizedRange max = Collections.max(ranges, Comparator.comparing(NormalizedRange::getPrice));
@@ -62,10 +69,16 @@ public class CryptoServiceImpl implements CryptoService {
 
     @Override
     public NormalizedRange highestNormalizedRange(Date date) {
+        saveDataToDbFromCSV();
+
         List<CryptoPrice> prices = cryptoRepository.findByDateBetween(
                 date.getTime(), Date.from(date.toInstant().plus(1, ChronoUnit.DAYS)).getTime());
 
         List<NormalizedRange> ranges = findNormalizedRanges(prices);
+
+        if (CollectionUtils.isEmpty(ranges)) {
+            return new NormalizedRange();
+        }
 
         return Collections.max(ranges, Comparator.comparing(NormalizedRange::getPrice));
     }
