@@ -16,8 +16,10 @@ As DB we use PostgreSQL
 ## How to run the application
 
 To run this application locally you should do following steps:
-1. Go to `CryptoApplication` class
-2. Run `CryptoApplication`
+1. Go to `application.properties` file
+2. Change username and password to your database
+3. Go to `CryptoApplication` class
+4. Run `CryptoApplication`
 
 ![img.png](images/run-app.png)
 
