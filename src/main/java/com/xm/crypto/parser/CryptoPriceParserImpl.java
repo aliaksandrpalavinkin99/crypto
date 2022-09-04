@@ -25,7 +25,7 @@ public class CryptoPriceParserImpl implements CryptoPriceParser {
     public boolean isParseNeeded() {
         try {
             File[] files = new ClassPathResource(FILE_PATH).getFile().listFiles();
-            if (Objects.isNull(files) && files.length == 0) {
+            if (Objects.isNull(files) || files.length == 0) {
                 return false;
             }
 
