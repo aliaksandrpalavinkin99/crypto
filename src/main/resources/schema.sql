@@ -4,3 +4,5 @@ CREATE TABLE IF NOT EXISTS Prices(
 	Crypto VARCHAR[20],
 	Price  DECIMAL
 );
+
+CREATE INDEX IF NOT EXISTS prices_date_price ON prices(date, price);
