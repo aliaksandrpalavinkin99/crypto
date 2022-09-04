@@ -1,6 +1,7 @@
 package com.xm.crypto.service;
 
 import com.xm.crypto.entity.*;
+import com.xm.crypto.exception.NoDataException;
 import com.xm.crypto.parser.CryptoPriceLoader;
 import com.xm.crypto.repository.CryptoRepository;
 import com.xm.crypto.util.CryptoOperationUtil;
@@ -58,7 +59,7 @@ public class CryptoServiceImpl implements CryptoService {
         List<NormalizedRange> ranges = findNormalizedRanges(prices);
 
         if (CollectionUtils.isEmpty(ranges)) {
-            return new ComparedResult();
+            throw new NoDataException("Doesn't have prices");
         }
 
         NormalizedRange min = Collections.min(ranges, Comparator.comparing(NormalizedRange::getPrice));
@@ -77,7 +78,7 @@ public class CryptoServiceImpl implements CryptoService {
         List<NormalizedRange> ranges = findNormalizedRanges(prices);
 
         if (CollectionUtils.isEmpty(ranges)) {
-            return new NormalizedRange();
+            throw new NoDataException("Doesn't have prices");
         }
 
         return Collections.max(ranges, Comparator.comparing(NormalizedRange::getPrice));

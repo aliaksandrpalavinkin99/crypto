@@ -8,6 +8,7 @@ import com.xm.crypto.entity.ComparedResult;
 import com.xm.crypto.entity.Crypto;
 import com.xm.crypto.entity.CryptoPrice;
 import com.xm.crypto.entity.NormalizedRange;
+import com.xm.crypto.exception.NoDataException;
 import com.xm.crypto.parser.CryptoPriceLoader;
 import com.xm.crypto.repository.CryptoRepository;
 import org.junit.Assert;
@@ -58,8 +59,8 @@ public class CryptoServiceImplTest {
         Assert.assertEquals(expected, normalizedRange);
     }
 
-    @Test
-    public void highestNormalizedRange_cryptoPricesIsEmpty_Success() {
+    @Test(expected = NoDataException.class)
+    public void highestNormalizedRange_cryptoPricesIsEmpty_ThrownException() {
         //given
         List<CryptoPrice> prices = new ArrayList<>();
         Date date = new Date();
@@ -69,8 +70,7 @@ public class CryptoServiceImplTest {
         when(cryptoPriceLoader.parsePrices()).thenReturn(prices);
         when(repository.findByDateBetween(any(), any())).thenReturn(prices);
         //then
-        NormalizedRange normalizedRange = service.highestNormalizedRange(date);
-        Assert.assertEquals(expected, normalizedRange);
+        service.highestNormalizedRange(date);
     }
 
     @Test
@@ -98,17 +98,15 @@ public class CryptoServiceImplTest {
         Assert.assertEquals(expected, result);
     }
 
-    @Test
-    public void compareNormalizedRange_emptyPrices_Success() {
+    @Test(expected = NoDataException.class)
+    public void compareNormalizedRange_emptyPrices_thrownException() {
         //given
         List<CryptoPrice> prices = new ArrayList<>();
-        ComparedResult expected = new ComparedResult();
         //when
         when(repository.saveAll(any())).thenReturn(prices);
         when(cryptoPriceLoader.parsePrices()).thenReturn(prices);
         when(repository.findAll()).thenReturn(prices);
         //then
-        ComparedResult result = service.compareNormalizedRange();
-        Assert.assertEquals(expected, result);
+        service.compareNormalizedRange();
     }
 }
