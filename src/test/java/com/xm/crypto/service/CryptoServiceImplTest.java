@@ -2,7 +2,6 @@ package com.xm.crypto.service;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
 
 import com.xm.crypto.entity.ComparedResult;
 import com.xm.crypto.entity.Crypto;
@@ -38,7 +37,7 @@ public class CryptoServiceImplTest {
     private CryptoServiceImpl service;
 
     @Test
-    public void highestNormalizedRange_Success() {
+    public void givenPrices_whenGetHighestNormalizedRange_thenSuccess() {
         //given
         List<CryptoPrice> prices = List.of(
                 new CryptoPrice(DATE, Crypto.BTC, new BigDecimal(4)),
@@ -49,7 +48,7 @@ public class CryptoServiceImplTest {
                 new CryptoPrice(DATE, Crypto.DOGE, new BigDecimal(10))
         );
         Date date = new Date();
-        NormalizedRange expected = new NormalizedRange(Crypto.BTC, new BigDecimal(1));
+        NormalizedRange expected = new NormalizedRange(Crypto.BTC, new BigDecimal("1.0000"));
         //when
         when(repository.saveAll(any())).thenReturn(prices);
         when(cryptoPriceLoader.parsePrices()).thenReturn(prices);
@@ -60,7 +59,7 @@ public class CryptoServiceImplTest {
     }
 
     @Test(expected = NoDataException.class)
-    public void highestNormalizedRange_cryptoPricesIsEmpty_ThrownException() {
+    public void givenEmptyPrices_whenGetHighestNormalizedRange_thenThrownException() {
         //given
         List<CryptoPrice> prices = new ArrayList<>();
         Date date = new Date();
@@ -74,7 +73,7 @@ public class CryptoServiceImplTest {
     }
 
     @Test
-    public void compareNormalizedRange_Success() {
+    public void givenPrices_whenCompareNormalizedRange_thenSuccess() {
         //given
         List<CryptoPrice> prices = List.of(
                 new CryptoPrice(DATE, Crypto.BTC, new BigDecimal(4)),
@@ -87,8 +86,8 @@ public class CryptoServiceImplTest {
                 new CryptoPrice(DATE, Crypto.LTC, new BigDecimal(9))
         );
         ComparedResult expected = new ComparedResult(
-                new NormalizedRange(Crypto.DOGE, new BigDecimal(0)),
-                new NormalizedRange(Crypto.BTC, new BigDecimal(1)));
+                new NormalizedRange(Crypto.DOGE, new BigDecimal("0.0000")),
+                new NormalizedRange(Crypto.BTC, new BigDecimal("1.0000")));
         //when
         when(repository.saveAll(any())).thenReturn(prices);
         when(cryptoPriceLoader.parsePrices()).thenReturn(prices);
@@ -99,7 +98,7 @@ public class CryptoServiceImplTest {
     }
 
     @Test(expected = NoDataException.class)
-    public void compareNormalizedRange_emptyPrices_thrownException() {
+    public void givenEmptyPrices_whenCompareNormalizedRange_thenThrownException() {
         //given
         List<CryptoPrice> prices = new ArrayList<>();
         //when

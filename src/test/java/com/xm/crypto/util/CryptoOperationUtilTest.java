@@ -26,7 +26,7 @@ public class CryptoOperationUtilTest {
     private CryptoOperationUtil util;
 
     @Test
-    public void getQueryMethodByOperation_whenOperationTypeMin_Success() {
+    public void givenOperationTypeMin_whenGetQueryMethodByOperation_thenSuccess() {
         //given
         OperationType operationType = OperationType.MIN;
         Crypto crypto = Crypto.BTC;
@@ -39,7 +39,7 @@ public class CryptoOperationUtilTest {
     }
 
     @Test
-    public void getQueryMethodByOperation_whenOperationTypeMax_Success() {
+    public void givenOperationTypeMax_whenGetQueryMethodByOperation_thenSuccess() {
         //given
         OperationType operationType = OperationType.MAX;
         Crypto crypto = Crypto.BTC;
@@ -52,7 +52,7 @@ public class CryptoOperationUtilTest {
     }
 
     @Test
-    public void getQueryMethodByOperation_whenOperationTypeLatest_Success() {
+    public void givenOperationTypeLatest_whenGetQueryMethodByOperation_thenSuccess() {
         //given
         OperationType operationType = OperationType.LATEST;
         Crypto crypto = Crypto.BTC;
@@ -65,7 +65,7 @@ public class CryptoOperationUtilTest {
     }
 
     @Test
-    public void getQueryMethodByOperation_whenOperationTypeNewest_Success() {
+    public void givenOperationTypeNewest_whenGetQueryMethodByOperation_thenSuccess() {
         //given
         OperationType operationType = OperationType.NEWEST;
         Crypto crypto = Crypto.BTC;
@@ -78,7 +78,7 @@ public class CryptoOperationUtilTest {
     }
 
     @Test
-    public void getOperationMethodForMonth_whenOperationTypeNewest_Success() {
+    public void givenOperationTypeNewest_whenGetOperationMethodForMonth_thenSuccess() {
         //given
         OperationType operationType = OperationType.NEWEST;
         List<CryptoPrice> cryptoPrice =
@@ -93,7 +93,7 @@ public class CryptoOperationUtilTest {
     }
 
     @Test
-    public void getOperationMethodForMonth_whenOperationTypeLatest_Success() {
+    public void givenOperationTypeLatest_whenGetOperationMethodForMonth_thenSuccess() {
         //given
         OperationType operationType = OperationType.LATEST;
         List<CryptoPrice> cryptoPrice =
@@ -108,7 +108,7 @@ public class CryptoOperationUtilTest {
     }
 
     @Test
-    public void getOperationMethodForMonth_whenOperationTypeMin_Success() {
+    public void givenOperationTypeMin_whenGetOperationMethodForMonth_thenSuccess() {
         //given
         OperationType operationType = OperationType.MIN;
         List<CryptoPrice> cryptoPrice =
@@ -123,7 +123,7 @@ public class CryptoOperationUtilTest {
     }
 
     @Test
-    public void getOperationMethodForMonth_whenOperationTypeMax_Success() {
+    public void givenOperationTypeMax_whenGetOperationMethodForMonth_thenSuccess() {
         //given
         OperationType operationType = OperationType.MAX;
         List<CryptoPrice> cryptoPrice =

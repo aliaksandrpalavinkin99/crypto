@@ -99,7 +99,7 @@ public class CryptoServiceImpl implements CryptoService {
             BigDecimal minPrice = Collections.min(item, Comparator.comparing(CryptoPrice::getPrice)).getPrice();
             BigDecimal maxPrice = Collections.max(item, Comparator.comparing(CryptoPrice::getPrice)).getPrice();
 
-            ranges.add(new NormalizedRange(key, maxPrice.subtract(minPrice).divide(minPrice, RoundingMode.CEILING)));
+            ranges.add(new NormalizedRange(key, maxPrice.subtract(minPrice).divide(minPrice, 4, RoundingMode.CEILING)));
         });
 
         return ranges;
