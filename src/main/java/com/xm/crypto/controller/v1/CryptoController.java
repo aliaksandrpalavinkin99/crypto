@@ -12,6 +12,8 @@ import com.xm.crypto.entity.OperationType;
 import com.xm.crypto.service.CryptoService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,8 @@ public class CryptoController {
     @Autowired
     private CryptoService cryptoService;
 
-    @ApiOperation(value = "Return all crypto prices sorted by descending")
+    @Operation(summary = "Find all",
+            description = "Return all crypto prices sorted by descending")
     @GetMapping
     public CryptoPricesDTO getCryptoPricesDescSort() {
         List<CryptoPrice> prices = cryptoService.getCryptoPricesSortedDesc();
@@ -42,7 +45,8 @@ public class CryptoController {
         return new CryptoPricesDTO(priceDTOs);
     }
 
-    @ApiOperation(value = "Return requested crypto according operation type and crypto type")
+    @Operation(summary = "Find by crypto and operation",
+            description = "Return requested crypto according operation type and crypto type")
     @GetMapping(value = "/{cryptoType}/{operation}")
     public CryptoPriceDTO getRequestedCryptoByOperation(
             @PathVariable @ApiParam(name = "cryptoType", value = "Crypto type") Crypto cryptoType,
@@ -52,7 +56,8 @@ public class CryptoController {
         return modelMapper.map(price, CryptoPriceDTO.class);
     }
 
-    @ApiOperation(value = "Return info according operation type for each crypto type for whole month")
+    @Operation(summary = "Find by operation and month with year",
+            description = "Return info according operation type for each crypto type for whole month")
     @GetMapping(value = "/{month}/{year}/{operation}")
     public CryptoPricesDTO getOperationResultForEachCrypto(
             @PathVariable @ApiParam(name = "month", value = "Month to search") Month month,
@@ -65,7 +70,11 @@ public class CryptoController {
         return new CryptoPricesDTO(priceDTOs);
     }
 
-    @ApiOperation(value = "Calculate and compare normalized range for all cryptos, return the least and greatest ranges")
+    @Operation(summary = "Compare normalized range",
+            description = "Calculate and compare normalized range for all cryptos, return the least and greatest ranges",
+            responses = {
+                    @ApiResponse(responseCode = "404", description = "Application doesn't have prices")}
+    )
     @GetMapping(value = "/comparing")
     public ComparedResultDTO compareNormalizedRange () {
         ComparedResult comparedResult = cryptoService.compareNormalizedRange();
@@ -79,8 +88,12 @@ public class CryptoController {
         return new ComparedResultDTO(leastRange, greatestRange);
     }
 
-    @ApiOperation(value = "Calculate and compare normalized range for all cryptos for a specific fate, " +
-            "return the highest range")
+    @Operation(summary = "Highest normalized range",
+            description = "Calculate and compare normalized range for all cryptos for a specific fate, " +
+                    "return the highest range",
+            responses = {
+                    @ApiResponse(responseCode = "404", description = "Application doesn't have prices")}
+    )
     @GetMapping(value = "/highest-normalized-range/{date}")
     public NormalizedRangeDTO highestNormalizedRange(
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd")
