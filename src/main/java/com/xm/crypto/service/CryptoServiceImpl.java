@@ -1,14 +1,18 @@
 package com.xm.crypto.service;
 
-import com.xm.crypto.entity.*;
+import com.xm.crypto.entity.ComparedResult;
+import com.xm.crypto.entity.Crypto;
+import com.xm.crypto.entity.CryptoPrice;
+import com.xm.crypto.entity.NormalizedRange;
+import com.xm.crypto.entity.OperationType;
 import com.xm.crypto.exception.NoDataException;
 import com.xm.crypto.parser.CryptoPriceLoader;
 import com.xm.crypto.repository.CryptoRepository;
 import com.xm.crypto.util.CryptoOperationUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,11 +31,20 @@ public class CryptoServiceImpl implements CryptoService {
     @Autowired
     private CryptoOperationUtil operationUtil;
 
+    private List<CryptoPrice> cryptoPricesSortedDescCache;
+    private ComparedResult compareNormalizedRangeCache;
+
     @Override
     public List<CryptoPrice> getCryptoPricesSortedDesc() {
         saveDataToDbFromCSV();
 
-        return cryptoRepository.findAllByOrderByPriceDesc();
+        if (CollectionUtils.isNotEmpty(cryptoPricesSortedDescCache)) {
+            return cryptoPricesSortedDescCache;
+        }
+
+        List<CryptoPrice> result = cryptoRepository.findAllByOrderByPriceDesc();
+        cryptoPricesSortedDescCache = result;
+        return result;
     }
 
     @Override
@@ -54,6 +67,10 @@ public class CryptoServiceImpl implements CryptoService {
     public ComparedResult compareNormalizedRange() {
         saveDataToDbFromCSV();
 
+        if (Objects.nonNull(compareNormalizedRangeCache)) {
+            return compareNormalizedRangeCache;
+        }
+
         List<CryptoPrice> prices = IterableUtils.toList(cryptoRepository.findAll());
 
         List<NormalizedRange> ranges = findNormalizedRanges(prices);
@@ -65,7 +82,9 @@ public class CryptoServiceImpl implements CryptoService {
         NormalizedRange min = Collections.min(ranges, Comparator.comparing(NormalizedRange::getPrice));
         NormalizedRange max = Collections.max(ranges, Comparator.comparing(NormalizedRange::getPrice));
 
-        return new ComparedResult(min, max);
+        ComparedResult result = new ComparedResult(min, max);
+        compareNormalizedRangeCache = result;
+        return result;
     }
 
     @Override
@@ -87,6 +106,10 @@ public class CryptoServiceImpl implements CryptoService {
     private void saveDataToDbFromCSV() {
         List<CryptoPrice> prices = cryptoPriceLoader.parsePrices();
         cryptoRepository.saveAll(prices);
+
+        if (CollectionUtils.isNotEmpty(prices)) {
+            cleanCaches();
+        }
     }
 
     private List<NormalizedRange> findNormalizedRanges(List<CryptoPrice> prices) {
@@ -122,5 +145,10 @@ public class CryptoServiceImpl implements CryptoService {
         end.add(Calendar.MONTH, 1);
 
         return end.getTimeInMillis();
+    }
+
+    private void cleanCaches() {
+        this.cryptoPricesSortedDescCache = Collections.emptyList();
+        this.compareNormalizedRangeCache = null;
     }
 }
